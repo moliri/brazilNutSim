@@ -546,8 +546,8 @@ void on_idle(void) {
 
 void setup_positions()
 {
-	light_center[0]=200;
-	light_center[1]=200;
+	light_center[0]=1200;
+	light_center[1]=1200;
 		
 	int k = 0;
 	int columns = (int)sqrt((num_robots * arena_width / arena_height));
@@ -567,6 +567,14 @@ void setup_positions()
 		double t = rand() * 2 * PI / RAND_MAX;
 		robots[k]->robot_init(x, y, t);
 		k++;
+	}
+	//setup for 100 (50/50)
+	for(int i = 0; i < 50; i++) {
+		robots[i]->id=1;	
+	} 
+	
+	for(int i = 50; i < 100; i++) {
+		robots[i]->id=2;	
 	}
 
 	// for(int i = 0; i < num_robots; i++) {
@@ -644,8 +652,8 @@ void setup_positions()
 
 	} */
 
-	/*//setup for 210 (70/70/70)
-	for(int i = 0; i < 70; i++) {
+	//setup for 210 (70/70/70)
+	/*for(int i = 0; i < 70; i++) {
 		robots[i] = new mykilobot();
 		robots[i]->robot_init(rand() % 2400, rand() % 2400, 0);
 		robots[i]->id=1;	

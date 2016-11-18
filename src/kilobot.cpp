@@ -13,6 +13,7 @@ class mykilobot : public kilobot
 	float vtaxis;
 	float vrand;
 	float vrepul;
+	float vrepulSum;
 	float vmotion;
 	
 	int motion=0;
@@ -41,14 +42,26 @@ class mykilobot : public kilobot
 				//calculate theta
 				vrand = calculateRand()*0.3;
 				vtaxis = calculateTaxis(fabs(fmod(angle_to_light, 2*PI)));
+				if (vrepulSum > 6.4) { //temper with max magnitude = 6.4
+					vrepulSum = 6.4;
+			
+				}
 
 				//calculate x,y of unit vector
 				float xposRand = cos(vrand);
 				float yposRand = sin(vrand);
 				float xposTaxis = cos(vtaxis);
 				float yposTaxis = sin(vtaxis);
+				float xposRepul = cos(vrepulSum);
+				float yposRepul = sin(vrepulSum);
+
+				//add rand + taxis
 				float xposSum = xposRand + xposTaxis;
 				float yposSum = yposRand + yposTaxis;
+
+				//add (rand+taxis) + repul
+				xposSum = xposSum + xposRepul;
+				yposSum = yposSum + yposRepul;
 				
 				float thetaSum = atan2(yposSum, xposSum);
 
@@ -89,8 +102,10 @@ class mykilobot : public kilobot
 			theta_distance--;
 
 			if (theta_distance <=0) {
+				//reset
 				transmissionComplete = 0;
 				state = 0;
+				vrepulSum = 0;
 			}
 			
 		}
@@ -169,13 +184,10 @@ class mykilobot : public kilobot
 		distance = estimate_distance(distance_measurement);
 		theta=t;
 		updateColor();
-
-		
-		// float vrand = calculateRand();
-		// printf("vrand: %f\n", vrand);
-		
-		// float vrepul = calculateRepul(theta, (float)distance/10); //converting mm to cm
-		// printf("vrepul: %f\n", vrepul);
+	
+		vrepul = calculateRepul(theta, (float)distance/10); //converting mm to cm
+		vrepulSum = vrepulSum + vrepul;
+		printf("vrepul: %f, vrepulSum: %f\n", vrepul, vrepulSum);
 
 		// float vmotion = vtaxis + 0.6*vrand + vrepul;
 		// printf("vmotion: %f\n", vmotion); 
@@ -211,8 +223,7 @@ class mykilobot : public kilobot
 		//estimate angular position to & distance from nearby robots
 		//magnitude(repulsion between robot i and j) = 0 when distance >= 2*R, and k(2*R - dist) otherwise
 		//sum magnitudes of all repulsion vectors to get vrepul
-
-		float vrepul;		
+	
 		float t = theta;
 		float d = distance;
 		float k = 0.2;
@@ -231,24 +242,16 @@ class mykilobot : public kilobot
 		}
 
 		if (distance >= virtualRadius*2) {
-			vrepul = vrepul + 0.0;
+			vrepul =  0.0;
 			printf("distance too large \n");
 			printf("Dist: %f ", distance);
 			printf(" r: %f \n", virtualRadius);
 		}
 
 		else {
-			vrepul = vrepul+ k*(2*virtualRadius - distance);	
+			vrepul = k*(2*virtualRadius - distance);	
 		}
-
-		if (vrepul > 6.4) { //max magnitude = 6.4
-			vrepul = 6.4;
-			return vrepul;
-		}
-		else {
-			return vrepul;
-		}
-		
+		return vrepul;
 	}
 
 	void updateColor() {

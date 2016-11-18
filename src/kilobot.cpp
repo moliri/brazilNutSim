@@ -36,14 +36,15 @@ class mykilobot : public kilobot
 			set_motors(0, 0);
 			if (transmissionComplete) {
 				state = 1;
-
+				printf("state 0 angle to light: %f\n", angle_to_light);
+				printf("state 0 mod angle to light: %f\n", fabs(fmod(angle_to_light, 2*PI)));
 				//calculate theta
-				vrand = calculateRand();
-				vtaxis = fmod(angle_to_light, 2*PI);
+				vrand = calculateRand()*0.3;
+				vtaxis = calculateTaxis(fabs(fmod(angle_to_light, 2*PI)));
 
 				//calculate x,y of unit vector
-				float xposRand = 0*cos(vrand);
-				float yposRand = 0*sin(vrand);
+				float xposRand = cos(vrand);
+				float yposRand = sin(vrand);
 				float xposTaxis = cos(vtaxis);
 				float yposTaxis = sin(vtaxis);
 				float xposSum = xposRand + xposTaxis;
@@ -55,21 +56,22 @@ class mykilobot : public kilobot
 				// 	thetaSum = fmod(thetaSum, 2*PI);
 				// }
 
-				thetaDelta = fmod(angle_to_light, 2*PI) - thetaSum;
+				thetaDelta = fabs(fmod(angle_to_light, 2*PI)) - thetaSum;
+				printf("theta sum: %f\n", thetaSum);
 				printf("theta delta: %f\n", thetaDelta);
 				theta_distance = 100; //convert vector length to # ticks to move using some scalar 
 			}
 		}
 
 		else if (state == 1) { //rotate
-			printf("state: %d, angle: %f\n", state, fmod(angle_to_light, 2*PI));
+			printf("state: %d, angle: %f\n", state, fabs(fmod(angle_to_light, 2*PI)));
 
 			if(fabs(fmod(angle_to_light, 2*PI) - thetaDelta)<.3) { //if within threshold, switch states and move forward
 				state = 2;
 
 			}
 
-			else if(fmod(angle_to_light, 2*PI) - thetaDelta <0) {
+			else if(fabs(fmod(angle_to_light, 2*PI)) - thetaDelta <0) {
 				spinup_motors();
 				set_motors(kilo_turn_left, 0);
 			}

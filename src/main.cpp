@@ -37,7 +37,7 @@ using namespace std;
 double time_sim;  //simulation time
 double zoom, view_x, view_y; //var. for zoom and scroll
 
-int num_robots = 1; //number of robots running
+int num_robots = 100; //number of robots running
 
 robot** robots;//creates an array of robots
 int* safe_distance;
@@ -546,8 +546,8 @@ void on_idle(void) {
 
 void setup_positions()
 {
-	light_center[0]=1000;
-	light_center[1]=1000;
+	light_center[0]=200;
+	light_center[1]=200;
 		
 	int k = 0;
 	int columns = (int)sqrt((num_robots * arena_width / arena_height));

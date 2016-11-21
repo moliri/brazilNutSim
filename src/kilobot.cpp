@@ -12,7 +12,7 @@ class mykilobot : public kilobot
 
 	float vtaxis;
 	float vrand;
-	float vrepul;
+	float vrepulMag;
 	float vrepulSum;
 	float vmotion;
 	
@@ -37,21 +37,21 @@ class mykilobot : public kilobot
 			set_motors(0, 0);
 			if (transmissionComplete) {
 				state = 1;
-				printf("state 0 angle to light: %f\n", angle_to_light);
-				printf("state 0 mod angle to light: %f\n", fabs(fmod(angle_to_light, 2*PI)));
+				// printf("state 0 angle to light: %f\n", angle_to_light);
+				// printf("state 0 mod angle to light: %f\n", fabs(fmod(angle_to_light, 2*PI)));
+				
 				//calculate theta
 				vrand = calculateRand()*0.3;
 				vtaxis = calculateTaxis(fabs(fmod(angle_to_light, 2*PI)));
 				if (vrepulSum > 6.4) { //temper with max magnitude = 6.4
 					vrepulSum = 6.4;
-			
 				}
 
 				//calculate x,y of unit vector
-				float xposRand = cos(vrand);
-				float yposRand = sin(vrand);
-				float xposTaxis = cos(vtaxis);
-				float yposTaxis = sin(vtaxis);
+				float xposRand = 0*cos(vrand);
+				float yposRand = 0*sin(vrand);
+				float xposTaxis = 0*cos(vtaxis);
+				float yposTaxis = 0*sin(vtaxis);
 				float xposRepul = cos(vrepulSum);
 				float yposRepul = sin(vrepulSum);
 
@@ -184,16 +184,28 @@ class mykilobot : public kilobot
 		distance = estimate_distance(distance_measurement);
 		theta=t;
 		updateColor();
+
+		//reverse direction and magnitude
+		theta = fabs(fmod(theta+PI, 2*PI));
+		distance = 1;
+		printf("theta: %f, repulTheta: %f\n", t, theta);
 	
-		vrepul = calculateRepul(theta, (float)distance/10); //converting mm to cm
-		vrepulSum = vrepulSum + vrepul;
-		printf("vrepul: %f, vrepulSum: %f\n", vrepul, vrepulSum);
+		// vrepulMag = 1;
+		vrepulMag = calculateRepul(theta, (float)distance/10); //converting mm to cm, calculating maginitude of repulsion vector
 
-		// float vmotion = vtaxis + 0.6*vrand + vrepul;
-		// printf("vmotion: %f\n", vmotion); 
+		//sum vector to total repulsion vector
+		float xposA = vrepulMag*cos(theta);
+		float yposA = vrepulMag*sin(theta);
+		float xposB = 0*cos(vrepulSum);
+		float yposB = 0*sin(vrepulSum);
 
-		// out_message.data[0] = vmotion;
-		// out_message.crc=message_crc(&out_message);
+		//add repulsion to repulsion sum
+		float xposSum = xposA + xposB;
+		float yposSum = yposA + yposB;
+		
+		vrepulSum = atan2(yposSum, xposSum);
+
+		printf("vrepulMag: %f, vrepulSum: %f\n", vrepulMag, vrepulSum);
 		
 	}
 
@@ -214,18 +226,16 @@ class mykilobot : public kilobot
 	float calculateRepul(float theta, float distance) {
 		//don't look at all neighbors, look at the ones close enough
 
-		//angle to light between -pi, pi (here, can check if it's negative, pos) or 0 to 2pi
-			//every time I add/subtract values to theta
-
-		//vector is a calculated repulsion force
+		//vector is a calculated repulsion force from a nearby neighbor
 
 		//assume virtual radius of all other robots = my radius
 		//estimate angular position to & distance from nearby robots
 		//magnitude(repulsion between robot i and j) = 0 when distance >= 2*R, and k(2*R - dist) otherwise
-		//sum magnitudes of all repulsion vectors to get vrepul
+		//sum magnitudes of all repulsion vectors to get vrepulMag
 	
 		float t = theta;
 		float d = distance;
+
 		float k = 0.2;
 		float virtualRadius = radius;
 
@@ -242,16 +252,16 @@ class mykilobot : public kilobot
 		}
 
 		if (distance >= virtualRadius*2) {
-			vrepul =  0.0;
+			vrepulMag =  0.0;
 			printf("distance too large \n");
 			printf("Dist: %f ", distance);
 			printf(" r: %f \n", virtualRadius);
 		}
 
 		else {
-			vrepul = k*(2*virtualRadius - distance);	
+			vrepulMag = k*(2*virtualRadius - distance);	
 		}
-		return vrepul;
+		return vrepulMag;
 	}
 
 	void updateColor() {

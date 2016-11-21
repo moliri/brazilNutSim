@@ -188,16 +188,14 @@ class mykilobot : public kilobot
 		//reverse direction and magnitude
 		theta = fabs(fmod(theta+PI, 2*PI));
 		distance = 1;
-		printf("theta: %f, repulTheta: %f\n", t, theta);
-	
-		// vrepulMag = 1;
+
 		vrepulMag = calculateRepul(theta, (float)distance/10); //converting mm to cm, calculating maginitude of repulsion vector
 
 		//sum vector to total repulsion vector
 		float xposA = vrepulMag*cos(theta);
 		float yposA = vrepulMag*sin(theta);
-		float xposB = 0*cos(vrepulSum);
-		float yposB = 0*sin(vrepulSum);
+		float xposB = cos(vrepulSum);
+		float yposB = sin(vrepulSum);
 
 		//add repulsion to repulsion sum
 		float xposSum = xposA + xposB;

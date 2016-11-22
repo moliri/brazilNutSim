@@ -41,17 +41,17 @@ class mykilobot : public kilobot
 				// printf("state 0 mod angle to light: %f\n", fabs(fmod(angle_to_light, 2*PI)));
 				
 				//calculate theta
-				vrand = calculateRand()*0.0;
+				vrand = calculateRand();
 				vtaxis = calculateTaxis(fabs(fmod(angle_to_light, 2*PI)));
 				if (vrepulSum > 6.4) { //temper with max magnitude = 6.4
 					vrepulSum = 6.4;
 				}
 
 				//calculate x,y of unit vector
-				float xposRand = cos(vrand);
-				float yposRand = sin(vrand);
-				float xposTaxis = fmod(cos(vtaxis), 1);
-				float yposTaxis = fmod(sin(vtaxis), 1);
+				float xposRand = cos(vrand)*0.2; //adding weight of .2
+				float yposRand = sin(vrand)*0.2;
+				float xposTaxis = cos(vtaxis);
+				float yposTaxis = sin(vtaxis);
 				float xposRepul = cos(vrepulSum);
 				float yposRepul = sin(vrepulSum);
 

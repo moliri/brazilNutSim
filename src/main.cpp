@@ -548,13 +548,27 @@ void setup_positions()
 {
 	light_center[0]=1200;
 	light_center[1]=1200;
-		
-	int k = 0;
-	int columns = (int)sqrt((num_robots * arena_width / arena_height));
-	int rows = (int)(num_robots / columns);
-	if (num_robots % columns) rows++;
-	int horizontal_separation =  arena_width / (columns + 1); //radius = 16
-	int vertical_separation = (int)arena_height / (rows + 1);
+	
+	//Testing setup for 3 robots
+	robots[0] = new mykilobot();
+	robots[1] = new mykilobot();
+	robots[2] = new mykilobot();
+	robots[0]->robot_init(400, 400, 0);
+	robots[1]->robot_init(450, 450, 0);
+	robots[2]->robot_init(425, 425, 0);
+	robots[0]->id=1;
+	robots[1]->id=2;
+	robots[2]->id=3;
+
+
+
+	//Setup for 3 shell types below
+	// int k = 0;
+	// int columns = (int)sqrt((num_robots * arena_width / arena_height));
+	// int rows = (int)(num_robots / columns);
+	// if (num_robots % columns) rows++;
+	// int horizontal_separation =  arena_width / (columns + 1); //radius = 16
+	// int vertical_separation = (int)arena_height / (rows + 1);
 	// for (int i = 0;i < num_robots;i++)
 	// {
 	// 	int c = i % columns + 1; //columns
@@ -568,23 +582,13 @@ void setup_positions()
 	// 	robots[k]->robot_init(x, y, t);
 	// 	k++;
 	// }
-
-	robots[0] = new mykilobot();
-	robots[1] = new mykilobot();
-	robots[2] = new mykilobot();
-	robots[0]->robot_init(400, 400, 0);
-	robots[1]->robot_init(450, 450, 0);
-	robots[2]->robot_init(425, 425, 0);
-	robots[0]->id=1;
-	robots[1]->id=2;
-	robots[2]->id=3;
 	
-	// //setup for 100 (100)
+	//setup for 100 (100)
 	// for(int i = 0; i < 100; i++) {
 	// 	robots[i]->id=1;
 	// }
 
-	// //setup for 100 (50/50)
+	//setup for 100 (50/50)
 	// for(int i = 0; i < 100; i++) {
 
 	// 	if (i % 2 == 0) {
@@ -595,8 +599,8 @@ void setup_positions()
 	// 	}	
 	// }
 
-	// //setup for 210 (70/70/70)
-	// for(int i = 0; i < 30; i++) {
+	//setup for 210 (70/70/70)
+	// for(int i = 0; i < 210; i++) {
 
 	// 	if (i % 3 == 0) {
 	// 		robots[i]->id=1;
@@ -604,106 +608,6 @@ void setup_positions()
 	// 		robots[i+2]->id=3;
 	// 	}	
 	// }
-
-	// for(int i = 0; i < num_robots; i++) {
-	// 	if (i <70) {
-	// 		robots[i]->id=1;
-	// 	}
-	// 	else if(i>= 70 && i<140) {
-	// 		robots[i]->id=2;
-	// 	}
-	// 	else if(i>= 140 && i<210) {
-	// 		robots[i]->id=3;
-	// 	}
-	// }
-
-	// int k = 0;
-	// int columns = 10; // 10x10 i.e. 10 columns, 10 rows
-	// int rows = (int)(num_robots / columns);
-	// if (num_robots % columns) rows++;
- // 	//robots are touching so seperation should be their diameter
-	// int horizontal_separation = 15*radius;
-	// int vertical_separation = 2*radius; 
-	// //place robots in center of screen/arena, aesthetic preference
-	// int center_x=arena_width/2-columns/2 * horizontal_separation; 
-	// int center_y=arena_height/2-rows/2 * vertical_separation;
-
-	
-	// robots[0] = new mykilobot();
-
-	// robots[0]->robot_init(rand() % 2400, rand() % 2400, 0);
-	// robots[0]->id=1;
-
-	// robots[1] = new mykilobot();
-
-	// robots[1]->robot_init(rand() % 2400, rand() % 2400, 0);
-	// robots[1]->id=2;
-
-	
-	// for(int i = 0; i < 150; i++) {
-	// 	robots[i] = new mykilobot();
-	// 	robots[i]->robot_init(10*(i%50), 10*(i%50), 0);
-	// }
-
-	// for(int i = 0; i < 150; i++) {
-	// 	if (i <50) {
-	// 		robots[i]->id=1;
-	// 	}
-	// 	else if(i>= 50 && i<100) {
-	// 		robots[i]->id=2;
-	// 	}
-	// 	else if(i>= 100 && i<150) {
-	// 		robots[i]->id=3;
-	// 	}
-	// }
-
-	/*//setup for 100 (100)
-	for(int i = 0; i < 100; i++) {
-		robots[i] = new mykilobot();
-		robots[i]->robot_init(rand() % 2400, rand() % 2400, 0);
-		robots[i]->id=1;	
-
-	} */
-
-	/*//setup for 100 (50/50)
-	for(int i = 0; i < 50; i++) {
-		robots[i] = new mykilobot();
-		robots[i]->robot_init(rand() % 2400, rand() % 2400, 0);
-		robots[i]->id=1;	
-
-	} 
-	
-	for(int i = 50; i < 100; i++) {
-		robots[i] = new mykilobot();
-		robots[i]->robot_init(rand() % 2400, rand() % 2400, 0);
-		robots[i]->id=2;	
-
-	} */
-
-	//setup for 210 (70/70/70)
-	/*for(int i = 0; i < 70; i++) {
-		robots[i] = new mykilobot();
-		robots[i]->robot_init(rand() % 2400, rand() % 2400, 0);
-		robots[i]->id=1;	
-
-	} 
-	
-	for(int i = 70; i < 140; i++) {
-		robots[i] = new mykilobot();
-		robots[i]->robot_init(rand() % 2400, rand() % 2400, 0);
-		robots[i]->id=2;	
-
-	}
-
-	for(int i = 140; i < 210; i++) {
-		robots[i] = new mykilobot();
-		robots[i]->robot_init(rand() % 2400, rand() % 2400, 0);
-		robots[i]->id=3;	
-
-	}*/
-
-
-
 
 }
 
